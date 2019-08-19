@@ -1,0 +1,93 @@
+body {
+    background-image: url('https://png.pngtree.com/thumb_back/fw800/background/20190223/ourmid/pngtree-beautiful-blue-sky-ocean-pixelated-background-design-backgroundpixelated-designadvertising-backgroundbackground-image_66463.jpg');
+    background-size: cover;
+    background-attachment: fixed;
+}
+
+.menu{
+	text-align: center;
+}
+
+a{
+	text-decoration: none;
+}
+a:visited { text-decoration: none; color:black; }
+a:hover { text-decoration: none; color:white; 
+			background-color: red;
+}
+a:focus { text-decoration: none; color:yellow; }
+a:hover, a:active { text-decoration: none; color:black }
+
+.btn {
+  border: 2px solid black;
+  background-color: white;
+  color: black;
+  padding-top: 2px;
+  padding-left: 10px;
+  padding-right: 10px;
+  font-size: 15px;
+  cursor: pointer;
+  border-radius: 15px;
+}
+
+.single {
+    border-color: black;
+    color: black;
+}
+
+.single:hover {
+  background: yellow;
+  color: black;
+}
+
+.multi {
+    border-color: black;
+    color: black;
+}
+
+.multi:hover {
+    background: green;
+    color: white;
+}
+
+.back {
+    border-color: black;
+    color: black;
+}
+
+.back:hover {
+  background: red;
+  color: black;
+}
+
+.info {
+	float:right;
+	border:4px solid #000000;
+	text-align: center;
+	position: absolute;
+	top: 190px;
+	left: 900px;
+	padding:5px;
+}
+
+.backMulti {
+	float:right;
+	text-align: center;
+	position: absolute;
+	font-style: sans-serif;
+	top: 300px;
+	left: 935px;
+	padding:5px;
+}
+
+.backSingle {
+	float:right;
+	text-align: center;
+	position: absolute;
+	font-style: sans-serif;
+	color: black;
+	top: 300px;
+	left: 930px;
+	padding:5px;
+}
+

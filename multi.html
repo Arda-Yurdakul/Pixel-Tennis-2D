@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Pixel Tennis 2D</title>
+	<link rel="stylesheet" type="text/css" href="style.css" />
+	<embed src="game.wav" autostart="true" loop="true" width="2" height="2"></embed>
+</head>
+
+<body>
+	<img class="background" />
+	<canvas id="kansas" width="800" height="600" style="border:4px solid #000000;"></canvas>
+	<div class="info">
+		<p>
+			Controls: Player 1: WS<br /> Player 2: Arrow Keys</p>
+	</div>
+	<div class="backMulti">
+		<a class="btn back" href="PlayGame.html">Main Menu</a>
+	</div>
+	<script>
+		let canvas;
+		let canvasContext;
+		let ballXPos = 395;
+		let ballYPos = 295;
+		let leftPaddlePos = 250;
+		let rightPaddlePos = 250;
+		let ballXSpeed;
+		let ballYSpeed;
+		let keyState = {};
+		let leftScore = 0;
+		let rightScore = 0;
+		const ballRadius = 10;
+		const paddleXDim = 10;
+		const paddleYDim = 100;
+		const margin = 0;
+		let leftWon = false;
+		let rightWon = false;
+		let leftVictory = false;
+		let rightVictory = false;
+		let deltaY;
+
+
+		function resetGame() {
+			if(leftVictory || rightVictory) {
+			leftScore = 0;
+			rightScore = 0;
+			leftVictory = false;
+			rightVictory = false;
+			}
+		}
+
+		// Game runs in a loop of desired framerate
+
+		window.onload = function () {
+			const framesPerSecond = 60;
+			canvas = document.getElementById('kansas');
+			canvasContext = canvas.getContext('2d');
+			canvas.addEventListener('mousedown', resetGame);
+			window.addEventListener('keydown', function (e) {
+				keyState[e.keyCode || e.which] = true;
+			}, true);
+			window.addEventListener('keyup', function (e) {
+				keyState[e.keyCode || e.which] = false;
+			}, true);
+			ballReset();
+			setInterval(() => {
+				gameLoop();
+				moveEverything();
+				drawEverything();
+			}, 1000 / framesPerSecond);
+		}
+
+		// The Key Bindings
+
+		function gameLoop() {
+			if (keyState[87] && leftPaddlePos > 0) {
+				leftPaddlePos -= 4;
+			}
+			if (keyState[83] && leftPaddlePos < canvas.height - paddleYDim) {
+				leftPaddlePos += 4;
+			}
+			if (keyState[38] && rightPaddlePos > 0) {
+				rightPaddlePos -= 4;
+			}
+			if (keyState[40] && rightPaddlePos < canvas.height - paddleYDim) {
+				rightPaddlePos += 4;
+			}
+		}
+
+		// Reset the ball into the center
+
+		function ballReset() {
+			ballXPos = 395;
+			ballYPos = 295;
+			const dir1 = Math.floor((Math.random() * 2));
+			if (dir1 == 0)
+				ballXSpeed = 5;
+			else
+				ballXSpeed = -5;
+			const dir2 = Math.floor((Math.random() * 2));
+			if (dir2 == 0)
+				ballYSpeed = 5;
+			else
+				ballYSpeed = -5;
+
+			if (leftScore >= 3) {
+				leftVictory = true;
+				rightVictory = false;
+			}
+			if (rightScore >= 3) {
+				rightVictory = true;
+				leftVictory = false;
+			}
+		}
+
+		function anchor() {
+			canvasContext.font = "bold 44px verdana, sans-serif ";
+			canvasContext.fillStyle = 'black';
+			if (leftWon == false && rightWon == false)
+				canvasContext.fillText(`Begin!`, 335, 550);
+			else if (leftWon == true && rightWon == false)
+				canvasContext.fillText(`P1 Score!`, 300, 550);
+			else if (leftWon == false && rightWon == true)
+				canvasContext.fillText(`P2 Score!`, 300, 550);
+		}
+
+		function moveEverything() {
+
+			// Ball moves
+
+			ballXPos += ballXSpeed;
+			ballYPos += ballYSpeed;
+
+			// If ball hits the top or bottom corners bounce
+
+			if (ballYPos > (canvas.height - ballRadius) || ballYPos < ballRadius)
+				ballYSpeed = -ballYSpeed;
+
+			// If the ball touches the right wall left wins
+
+			if (ballXPos == (canvas.width - ballRadius)) {
+				leftScore += 1;
+				leftWon = true;
+				rightWon = false;
+				setTimeout(ballReset, 3000);
+			}
+
+			// If the ball touches the left wall right wins
+
+			if (ballXPos == ballRadius) {
+				rightScore += 1;
+				leftWon = false;
+				rightWon = true;
+				setTimeout(ballReset, 3000);
+			}
+
+			// If the ball touches one of the paddles it bounces
+
+			if (ballYPos > leftPaddlePos && ballYPos < (leftPaddlePos + paddleYDim) && (ballXPos == (margin + paddleXDim + ballRadius))) {
+				ballXSpeed = -ballXSpeed;
+				deltaY = ballYPos - (leftPaddlePos + paddleYDim / 2);
+				ballYSpeed = deltaY * 0.15;
+			}
+			if (ballYPos > rightPaddlePos && ballYPos < (rightPaddlePos + paddleYDim) && (ballXPos == (canvas.width - paddleXDim - ballRadius))) {
+				ballXSpeed = -ballXSpeed;
+				deltaY = ballYPos - (rightPaddlePos + paddleYDim / 2);
+				ballYSpeed = deltaY * 0.15;
+			}
+		}
+
+
+
+
+		function drawEverything() {
+
+			if(leftVictory) {
+				canvasContext.fillStyle = 'white';
+			canvasContext.fillRect(margin, margin, canvas.width, canvas.height);
+			canvasContext.font = "bold 44px verdana, sans-serif ";
+			canvasContext.fillStyle = 'black';
+			canvasContext.fillText(`P1 Wins!`,310,50);
+			canvasContext.font = "bold 24px verdana, sans-serif ";
+			canvasContext.fillText(`Click To Play Again`,285,80);
+			return;
+			}
+
+			if(rightVictory) {
+				canvasContext.fillStyle = 'white';
+			canvasContext.fillRect(margin, margin, canvas.width, canvas.height);
+			canvasContext.font = "bold 44px verdana, sans-serif ";
+			canvasContext.fillStyle = 'black';
+			canvasContext.fillText(`P2 Wins!`,310,50);
+			canvasContext.font = "bold 24px verdana, sans-serif ";
+			canvasContext.fillText(`Click To Play Again`,285,80);
+			return;
+			}
+
+
+			// Render The Play Field
+
+			canvasContext.fillStyle = 'white';
+			canvasContext.fillRect(margin, margin, canvas.width, canvas.height);
+
+			// Render The Left Paddle
+
+			canvasContext.fillStyle = 'red';
+			canvasContext.fillRect(margin + 10, leftPaddlePos, paddleXDim, paddleYDim);
+
+			// Render The Right Paddle
+
+			canvasContext.fillStyle = 'blue';
+			canvasContext.fillRect(canvas.width - paddleXDim - 10, rightPaddlePos, paddleXDim, paddleYDim);
+
+			// Render The Ball
+
+			canvasContext.fillStyle = 'black';
+			canvasContext.beginPath();
+			canvasContext.arc(ballXPos, ballYPos, ballRadius, Math.PI * 2, false);
+			canvasContext.fill();
+
+			// Render The Score
+
+			canvasContext.font = "bold 44px verdana, sans-serif ";
+			canvasContext.fillStyle = 'black';
+			canvasContext.fillText(`${leftScore} - ${rightScore}`, 360, 50);
+
+			// Render The Announcement
+
+			anchor();
+
+		}
+
+	</script>
+</body>
+
+</html>
